@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TP</string>
+    <string name="liste_enseignants">liste_enseignants</string>
+    <string name="open_drawer">open</string>
+    <string name="close_drawer">close</string>
+
+
+</resources>
