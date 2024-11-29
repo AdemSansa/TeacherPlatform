@@ -1,4 +1,4 @@
-package tn.rnu.isetr.tp;
+package tn.rnu.isetr.tp.Adapters;
 
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import tn.rnu.isetr.tp.Entity.Teacher;
+import tn.rnu.isetr.tp.R;
 
 public class TeachAdapter extends RecyclerView.Adapter<TeachAdapter.TeacherViewHolder> {
     private final List<Teacher> teacherList;
