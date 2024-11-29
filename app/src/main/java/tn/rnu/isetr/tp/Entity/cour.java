@@ -1,4 +1,4 @@
-package tn.rnu.isetr.tp;
+package tn.rnu.isetr.tp.Entity;
 
 public class cour {
     private String nom;

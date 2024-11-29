@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.EditText;
 
@@ -11,7 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import tn.rnu.isetr.tp.Database.DatabaseManager;
+
 public class MyDialogFragment extends DialogFragment {
+    DatabaseManager databaseManager;
     public interface TeacherDialogListener {
         void onTeacherAdded(String name, String email);
     }
@@ -20,6 +24,8 @@ public class MyDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        databaseManager = new DatabaseManager(getContext());
+
         AlertDialog.Builder builder = new
                 AlertDialog.Builder(requireContext());
         final View dialogView =
@@ -35,6 +41,8 @@ public class MyDialogFragment extends DialogFragment {
                                 String Email = email.getText().toString();
                                 if (listener != null) {
                                     listener.onTeacherAdded(Name,Email);
+                                    databaseManager.addTeacher(Name,Email);
+
                                 }
                             }
                 })

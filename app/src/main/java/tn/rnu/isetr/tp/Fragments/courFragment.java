@@ -1,5 +1,6 @@
-    package tn.rnu.isetr.tp;
+    package tn.rnu.isetr.tp.Fragments;
 
+    import android.database.Cursor;
     import android.os.Bundle;
     import android.view.LayoutInflater;
     import android.view.View;
@@ -7,29 +8,36 @@
     import android.widget.ArrayAdapter;
     import android.widget.Button;
     import android.widget.EditText;
-    import android.widget.PopupMenu;
     import android.widget.RadioGroup;
     import android.widget.Spinner;
-    import android.widget.TextView;
 
     import androidx.fragment.app.Fragment;
-    import androidx.lifecycle.ViewModelProvider;
-    import androidx.recyclerview.widget.LinearLayoutManager;
 
     import java.util.ArrayList;
     import java.util.List;
+
+    import tn.rnu.isetr.tp.Database.DatabaseManager;
+    import tn.rnu.isetr.tp.Entity.Teacher;
+    import tn.rnu.isetr.tp.R;
 
     public class courFragment extends Fragment {
         private EditText Name, Hours;
         private RadioGroup Type;
         private Spinner teacherSpinner;
         private Button addCourseButton;
-        private SharedViewModel sharedViewModel;
+        private Button showButton;
+        private DatabaseManager databaseManager;
+
+
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-            ArrayList <String>teacherList = sharedViewModel.getTeacherNames();
+            ArrayList <String>teacherList = new ArrayList<>();
+            databaseManager = new DatabaseManager(getContext());
+
+            fillTeachersInSpinner(teacherList);
+
             View view = inflater.inflate(R.layout.fragment_cour, container, false);
             Name = view.findViewById(R.id.name);
             Hours = view.findViewById(R.id.hours);
@@ -44,7 +52,30 @@
             }
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, teacherList);
 
-
+            showButton = view.findViewById(R.id.button_list_courses);
+            showButton = view.findViewById(R.id.button_list_courses);
+            showButton.setOnClickListener(v -> {
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new ListCourFragment())
+                        .addToBackStack(null)
+                        .commit();
+            });
             return view;
         }
+        private void fillTeachersInSpinner(ArrayList<String> teacherNames) {
+
+            Cursor cursor = databaseManager.getAllTeachers();
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+
+
+
+                    teacherNames.add(name);
+                } while (cursor.moveToNext());
+                cursor.close();
+            }
+        }
+
+
     }

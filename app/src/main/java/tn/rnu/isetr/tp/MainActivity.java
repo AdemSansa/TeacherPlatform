@@ -5,22 +5,27 @@ import android.view.Menu;
 import android.view.View;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import tn.rnu.isetr.tp.Adapters.CoursAdapter;
+import tn.rnu.isetr.tp.Adapters.TeachAdapter;
+import tn.rnu.isetr.tp.Database.DatabaseHelper;
+import tn.rnu.isetr.tp.Database.DatabaseManager;
+import tn.rnu.isetr.tp.Entity.Teacher;
+import tn.rnu.isetr.tp.Fragments.AboutFragment;
+import tn.rnu.isetr.tp.Fragments.ListCourFragment;
+import tn.rnu.isetr.tp.Fragments.ProfileFragment;
+import tn.rnu.isetr.tp.Fragments.courFragment;
+import tn.rnu.isetr.tp.Fragments.homeFragment;
 import tn.rnu.isetr.tp.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity
@@ -38,6 +43,8 @@ public class MainActivity extends AppCompatActivity
         View view = bind.getRoot();
         setContentView(view);
         setTitle("My App");
+
+
         teacherList = new ArrayList<>();
 // Initialiser la Toolbar
         setSupportActionBar(bind.toolbar);
@@ -77,14 +84,31 @@ public class MainActivity extends AppCompatActivity
             invalidateOptionsMenu();
             getSupportFragmentManager().beginTransaction().replace
                     (R.id.fragment_container, new AboutFragment()).commit();
-        }  else if (item.getItemId() == R.id.nav_cours) {
+        }else if (item.getItemId() == R.id.nav_profile) {
+            bind.toolbar.setTitle("Cours");
+            enseig = false;
+            about = false;
+            Cour = false;
+            profile = true;
+            invalidateOptionsMenu();
+
+            getSupportFragmentManager().beginTransaction().replace
+                    (R.id.fragment_container, new ProfileFragment()).commit();
+        } else if (item.getItemId() == R.id.nav_logout) {
+            Log.i("tag", "exit");
+            Toast.makeText(this, "Exit", Toast.LENGTH_LONG).show();
+            finish();
+        }
+        else if (item.getItemId() == R.id.nav_cours) {
         bind.toolbar.setTitle("Cours");
         enseig = false;
         about = false;
+        Cour = true;
         invalidateOptionsMenu();
 
         getSupportFragmentManager().beginTransaction().replace
                 (R.id.fragment_container, new courFragment()).commit();
+
     } else if (item.getItemId() == R.id.nav_logout) {
             Log.i("tag", "exit");
             Toast.makeText(this, "Exit", Toast.LENGTH_LONG).show();
@@ -110,6 +134,8 @@ public class MainActivity extends AppCompatActivity
     }
     boolean enseig=false;
     boolean about=false;
+    boolean Cour=false;
+    boolean profile=false;
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
@@ -118,6 +144,9 @@ public class MainActivity extends AppCompatActivity
             // Inflate menu for option 1
         } else if(about) {
             getMenuInflater().inflate(R.menu.menu_main_about_xml, menu);
+        } else if (Cour) {
+            getMenuInflater().inflate(R.menu.menu_cour_edit, menu);
+
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -134,6 +163,15 @@ public class MainActivity extends AppCompatActivity
             return true;
         } else if (item.getItemId() == R.id.add) {
             showAddingDialog();
+        }else if (item.getItemId() == R.id.AjoutMenu) {
+            //Show cour fragment
+            getSupportFragmentManager().beginTransaction().replace
+                    (R.id.fragment_container, new courFragment()).commit();
+        }
+        else if (item.getItemId() == R.id.ListerMenu) {
+            //SHow listcourfragment
+            getSupportFragmentManager().beginTransaction().replace
+                    (R.id.fragment_container, new ListCourFragment()).commit();
         }
         return super.onOptionsItemSelected(item);
     }

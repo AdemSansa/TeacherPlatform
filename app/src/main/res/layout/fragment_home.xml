@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/frag_home"
-    tools:context=".homeFragment">
+    tools:context=".Fragments.homeFragment">
     <TextView
         android:id="@+id/header_list"
         android:layout_width="match_parent"

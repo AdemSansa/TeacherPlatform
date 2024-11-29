@@ -1,5 +1,5 @@
-package tn.rnu.isetr.tp;
-import java.io.Serializable;
+package tn.rnu.isetr.tp.Fragments;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -7,14 +7,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import tn.rnu.isetr.tp.Database.DatabaseManager;
+import tn.rnu.isetr.tp.Entity.Teacher;
 import tn.rnu.isetr.tp.R;
+import tn.rnu.isetr.tp.Adapters.TeachAdapter;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,12 +27,13 @@ public class homeFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<Teacher> teacherList;
     private TeachAdapter teacherAdapter;
-    private SharedViewModel sharedViewModel;
+    DatabaseManager databaseManager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
+
 
         recyclerView = view.findViewById(R.id.mRecyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -40,6 +43,7 @@ public class homeFragment extends Fragment {
         }
         TextView headerList = view.findViewById(R.id.header_list);
         if (headerList != null) {
+
             headerList.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -50,14 +54,30 @@ public class homeFragment extends Fragment {
                 }
             });
         }
-
         teacherAdapter = new TeachAdapter(teacherList);
         recyclerView.setAdapter(teacherAdapter);
+        databaseManager = new DatabaseManager(getContext());
         registerForContextMenu(recyclerView);
-        sharedViewModel.setTeacherList((ArrayList<Teacher>) teacherList);
+        loadTeachers();
+
+
+
         return view;
     }
 
+    private void loadTeachers() {
+        Cursor cursor = databaseManager.getAllTeachers();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                String email = cursor.getString(cursor.getColumnIndexOrThrow("email"));
+
+                teacherList.add(new Teacher(name, email));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        teacherAdapter.notifyDataSetChanged();
+    }
 
     public TeachAdapter getAdapter() {
         return teacherAdapter;
@@ -74,16 +94,24 @@ public class homeFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         int position = teacherAdapter.getSelectedPosition();
+
         if (position != RecyclerView.NO_POSITION && item.getItemId() == R.id.delete_item) {
-            removeItem(position);
-                return true;}
-            else{
-                return super.onContextItemSelected(item);
+            // Remove the teacher from the database
+            Teacher teacher = teacherList.get(position);
+            boolean isDeleted = databaseManager.deleteTeacher(teacher.getEmail());
+
+            if (isDeleted) {
+                // Remove the teacher from the list and notify the adapter
+                teacherList.remove(position);
+                teacherAdapter.notifyItemRemoved(position);
+            }
+            return true;
+        } else {
+            return super.onContextItemSelected(item);
         }
     }
-    public void removeItem(int position) {
-        teacherAdapter.removeItem(position);
-    }
+
+
     public void setTeacherList(List<Teacher> teacherList) {
         this.teacherList = teacherList;
         if (teacherAdapter != null) {

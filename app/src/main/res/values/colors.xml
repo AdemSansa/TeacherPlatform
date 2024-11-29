@@ -3,4 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="lavender">#FFC8A2C8</color>
+    <color name = "purple_500">#6200EE</color>
+    <color name = "purple_200">#BB86FC</color>
+    <color name = "purple_700">#3700B3</color>
+    <color name = "purple_900">#12005E</color>
+
 </resources>
