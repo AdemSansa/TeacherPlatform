@@ -1,16 +1,29 @@
 package tn.rnu.isetr.tp.Entity;
 
 public class cour {
+
     private String nom;
     private String type;
     private int heure;
     private String enseignant;
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    private String ID;
+
 
     public cour(String nom, String type, int heure, String enseignant) {
         this.nom = nom;
         this.type = type;
         this.heure = heure;
         this.enseignant = enseignant;
+
     }
 
     public String getNom() {

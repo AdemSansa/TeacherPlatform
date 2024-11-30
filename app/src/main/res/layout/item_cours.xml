@@ -8,15 +8,19 @@
 
     <TextView
         android:id="@+id/textType"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Type de cours" />
+        android:text="Type de cours"
+        android:textAlignment="textEnd"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textNom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nom de cours" />
+        android:text="Nom de cours"
+        android:textSize="24sp" />
 
     <EditText
         android:id="@+id/editNbHeures"
@@ -34,11 +38,13 @@
         android:id="@+id/buttonEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="EDIT" />
+        android:text="EDIT"
+        android:layout_marginEnd="16dp"/>
 
     <Button
         android:id="@+id/buttonDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DELETE" />
+        android:text="DELETE"
+        android:textAlignment="center" />
 </LinearLayout>

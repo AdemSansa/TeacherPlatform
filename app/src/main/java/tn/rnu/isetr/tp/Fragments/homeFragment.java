@@ -66,6 +66,7 @@ public class homeFragment extends Fragment {
     }
 
     private void loadTeachers() {
+        teacherList.clear();
         Cursor cursor = databaseManager.getAllTeachers();
         if (cursor != null && cursor.moveToFirst()) {
             do {

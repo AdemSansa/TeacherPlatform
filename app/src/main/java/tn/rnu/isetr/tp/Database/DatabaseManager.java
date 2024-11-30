@@ -4,6 +4,7 @@ import static tn.rnu.isetr.tp.Database.DatabaseHelper.COLUMN_TEACHER_EMAIL;
 import static tn.rnu.isetr.tp.Database.DatabaseHelper.COLUMN_USER_EMAIL;
 import static tn.rnu.isetr.tp.Database.DatabaseHelper.COLUMN_USER_NAME;
 import static tn.rnu.isetr.tp.Database.DatabaseHelper.COLUMN_USER_PASSWORD;
+import static tn.rnu.isetr.tp.Database.DatabaseHelper.COLUMN_USER_PHONE;
 import static tn.rnu.isetr.tp.Database.DatabaseHelper.TABLE_USER;
 import static tn.rnu.isetr.tp.Database.DatabaseHelper.COLUMN_TEACHER_ID;
 import android.content.ContentValues;
@@ -11,6 +12,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.StringTokenizer;
 
 public class DatabaseManager {
     private DatabaseHelper dbHelper;
@@ -20,6 +23,18 @@ public class DatabaseManager {
         dbHelper = new DatabaseHelper(context);
         database = dbHelper.getWritableDatabase();
 
+    }
+    // Get ALl Users
+    public Cursor getAllUsers() {
+        return database.query(
+                DatabaseHelper.TABLE_USER, // Table
+                null,                         // All columns
+                null,                         // No WHERE clause
+                null,                         // No WHERE args
+                null,                         // No GROUP BY
+                null,                         // No HAVING
+                null                          // No ORDER BY
+        );
     }
     // Insert a Teacher
     public void insertTeacher(String name, String email) {
@@ -50,9 +65,10 @@ public class DatabaseManager {
 
     }
     //Insert a User
-    public boolean insertUser(String name, String email, String password) {
+    public boolean insertUser(String name, String email, String password, String PhoneNumber) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(COLUMN_USER_PHONE, PhoneNumber);
         values.put(COLUMN_USER_NAME, name);
         values.put(COLUMN_USER_EMAIL, email);
         values.put(COLUMN_USER_PASSWORD, password);
@@ -103,6 +119,64 @@ public class DatabaseManager {
                 null                          // No ORDER BY
         );
     }
+    //update User
+    public boolean updateUser(String name, String email) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USER_NAME, name);
+        values.put(COLUMN_USER_EMAIL, email);
+
+        int rows = db.update(TABLE_USER, values, COLUMN_USER_EMAIL + " = ?", new String[]{email});
+        return rows > 0;
+    }
+    //Delete Course
+    public Boolean deleteCourse(String nom) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int rows =  db.delete("Cours", "name = ?", new String[]{String.valueOf(nom)});
+        db.close();
+
+        return rows > 0;
+
+    }
+    // Add a Task
+    public long addTask(String title, String description, String dueDate, int priority, String status) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("title", title);
+        values.put("description", description);
+        values.put("date", dueDate);
+        values.put("priority", priority);
+        values.put("status", status);
+        return db.insert("tasks", null, values);
+    }
+
+    // Get All Tasks
+    public Cursor getAllTasks() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM tasks ORDER BY priority DESC", null);
+    }
+
+    // Delete a Task
+    public boolean deleteTask(int id) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        return db.delete("tasks", "_id = ?", new String[]{String.valueOf(id)}) > 0;
+    }
+
+    // Update a Task
+    public boolean updateTask(int id, String title, String description, String dueDate, int priority, String status) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("title", title);
+        values.put("description", description);
+        values.put("date", dueDate);
+        values.put("priority", priority);
+        values.put("status", status);
+        return db.update("tasks", values, "_id = ?", new String[]{String.valueOf(id)}) > 0;
+    }
+
+
+
+
 
 
 
