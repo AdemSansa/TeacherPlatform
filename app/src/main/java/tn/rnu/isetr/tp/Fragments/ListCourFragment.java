@@ -4,9 +4,11 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,5 +67,15 @@ public class ListCourFragment extends Fragment {
         coursAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        int position = coursAdapter.getSelectedPosition();
+        if (item.getItemId() == R.id.buttonDelete) {
+            databaseManager.deleteCourse(coursList.get(position).getNom());
+            coursList.remove(position);
+            coursAdapter.notifyItemRemoved(position);
+        }
 
+        return super.onContextItemSelected(item);
+    }
 }

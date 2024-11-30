@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import tn.rnu.isetr.tp.Database.DatabaseManager;
 import tn.rnu.isetr.tp.R;
 
 
@@ -29,6 +30,8 @@ public class ProfileFragment extends Fragment {
     private ImageView profileImage;
     private EditText profileName;
     private SharedPreferences sharedPreferences;
+    private DatabaseManager databaseManager;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,26 +40,30 @@ public class ProfileFragment extends Fragment {
         // Initialize UI components
         profileImage = view.findViewById(R.id.profile_picture);
         profileName = view.findViewById(R.id.et_name);
+        EditText editEmail = view.findViewById(R.id.et_email);
+        EditText editName = view.findViewById(R.id.et_name);
         Button editProfileImageButton = view.findViewById(R.id.editProfileImageButton);
         Button saveProfileButton = view.findViewById(R.id.btn_update_profile);
+        saveProfileButton.setOnClickListener(v -> saveUserData(editEmail, editName));
+        Button contactUsers = view.findViewById(R.id.ContactUserr);
+        contactUsers.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new UsersContactsFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
 
-        // Initialize SharedPreferences
+        // Initialize SharedPreferences and database
         sharedPreferences = requireActivity().getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
+
+        databaseManager = new DatabaseManager(getContext());
 
 
 
         // Handle profile image change
         editProfileImageButton.setOnClickListener(v -> openImagePicker());
 
-        // Handle saving profile
-        saveProfileButton.setOnClickListener(v -> {
-            String updatedName = profileName.getText().toString().trim();
-            if (!updatedName.isEmpty()) {
-                saveProfileData(updatedName);
-            } else {
-                Toast.makeText(getContext(), "Name cannot be empty!", Toast.LENGTH_SHORT).show();
-            }
-        });
+
 
 
         return view;
@@ -107,6 +114,7 @@ public class ProfileFragment extends Fragment {
     private void loadProfileData() {
         String savedName = sharedPreferences.getString("userName", "");
         String savedEmail = sharedPreferences.getString("userEmail", "");
+
         TextView email = requireView().findViewById(R.id.Emailtext);
         email.setText(savedEmail);
         TextView profileName = requireView().findViewById(R.id.NameText);
@@ -117,5 +125,25 @@ public class ProfileFragment extends Fragment {
 
 
 
+    }
+    private void saveUserData(EditText email, EditText name) {
+        // Get updated values
+        String updatedName = name.getText().toString().trim();
+        String updatedEmail = email.getText().toString().trim();
+
+        // Validate inputs
+        if (updatedName.isEmpty() || updatedEmail.isEmpty()) {
+            Toast.makeText(getContext(), "Name and Email cannot be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Save to database (Example: SQLite)
+        DatabaseManager databaseManager = new DatabaseManager(getContext());
+        boolean isUpdated = databaseManager.updateUser(updatedName, updatedEmail);
+        if (isUpdated) {
+            Toast.makeText(getContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "Failed to update profile", Toast.LENGTH_SHORT).show();
+        }
     }
 }

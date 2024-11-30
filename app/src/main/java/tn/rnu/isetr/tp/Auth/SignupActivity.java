@@ -29,19 +29,21 @@ public class SignupActivity extends AppCompatActivity {
             String email = bind.etEmail.getText().toString();
             String password = bind.etPassword.getText().toString();
             String confirmPassword = bind.etConfirmPassword.getText().toString();
+            String phone = bind.EtPhoneNumber.getText().toString();
 
-            if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || name.isEmpty()) {
+            if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || name.isEmpty() || phone.isEmpty()) {
                 bind.etEmail.setError("Email is required");
                 bind.etPassword.setError("Password is required");
                 bind.etConfirmPassword.setError("Confirm Password is required");
                 bind.etName.setError("Name is required");
+                bind.EtPhoneNumber.setError("Phone Number is required");
             }
             if (!password.equals(confirmPassword)) {
                 bind.etPassword.setError("Password does not match");
                 bind.etConfirmPassword.setError("Password does not match");
             }
             else {
-                boolean isInserted = databaseManager.insertUser(name, email, password);
+                boolean isInserted = databaseManager.insertUser(name, email, password, phone);
                 if (isInserted) {
                     Toast.makeText(this, "Signup successful", Toast.LENGTH_SHORT).show();
                     finish();

@@ -24,6 +24,7 @@ import tn.rnu.isetr.tp.Entity.Teacher;
 import tn.rnu.isetr.tp.Fragments.AboutFragment;
 import tn.rnu.isetr.tp.Fragments.ListCourFragment;
 import tn.rnu.isetr.tp.Fragments.ProfileFragment;
+import tn.rnu.isetr.tp.Fragments.TaskFragment;
 import tn.rnu.isetr.tp.Fragments.courFragment;
 import tn.rnu.isetr.tp.Fragments.homeFragment;
 import tn.rnu.isetr.tp.databinding.ActivityMainBinding;
@@ -84,8 +85,19 @@ public class MainActivity extends AppCompatActivity
             invalidateOptionsMenu();
             getSupportFragmentManager().beginTransaction().replace
                     (R.id.fragment_container, new AboutFragment()).commit();
-        }else if (item.getItemId() == R.id.nav_profile) {
-            bind.toolbar.setTitle("Cours");
+        } else if (item.getItemId()==R.id.nav_task) {
+            bind.toolbar.setTitle("Tasks");
+            enseig = false;
+            about = false;
+            Cour = false;
+            profile = false;
+            Task = true;
+            invalidateOptionsMenu();
+            getSupportFragmentManager().beginTransaction().replace
+                    (R.id.fragment_container, new TaskFragment()).commit();
+            
+        } else if (item.getItemId() == R.id.nav_profile) {
+            bind.toolbar.setTitle("Profile");
             enseig = false;
             about = false;
             Cour = false;
@@ -136,6 +148,7 @@ public class MainActivity extends AppCompatActivity
     boolean about=false;
     boolean Cour=false;
     boolean profile=false;
+    boolean Task=false;
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();

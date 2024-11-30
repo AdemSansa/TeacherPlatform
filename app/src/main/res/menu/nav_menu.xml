@@ -16,6 +16,11 @@
             android:id="@+id/nav_cours"
             android:icon="@drawable/nav_cour"
             android:title="Gerer Cours" />
+        <item
+            android:id="@+id/nav_task"
+            android:icon="@drawable/nav_task"
+            android:title="Tasks" />
+
     </group>
     <item android:title="">
         <menu>

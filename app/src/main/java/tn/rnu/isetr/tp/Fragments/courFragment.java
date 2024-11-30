@@ -10,6 +10,7 @@
     import android.widget.EditText;
     import android.widget.RadioGroup;
     import android.widget.Spinner;
+    import android.widget.Toast;
 
     import androidx.fragment.app.Fragment;
 
@@ -46,13 +47,23 @@
              addCourseButton = view.findViewById(R.id.button_add_course);
              teacherSpinner.setAdapter( new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, teacherList));
 
+            addCourseButton.setOnClickListener(v -> {
+                        String name = Name.getText().toString();
+                        Double hours = Double.valueOf(Hours.getText().toString());
+                        String type = Type.getCheckedRadioButtonId() == R.id.radio_group_type ? "Cours" : "Atelier";
+                        String teacher = teacherSpinner.getSelectedItem().toString();
+                        databaseManager.insertCourse(name, hours, type, teacher);
+                        Toast.makeText(getContext(), "Course added successfully", Toast.LENGTH_SHORT).show();
+                        Name.setText("");
+                        Hours.setText("");
+                        Type.clearCheck();
+                    });
             List<Teacher> teachers = new ArrayList<>();
             if (getArguments() != null) {
                 teachers = (List<Teacher>) getArguments().getSerializable("teachers");
             }
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, teacherList);
 
-            showButton = view.findViewById(R.id.button_list_courses);
             showButton = view.findViewById(R.id.button_list_courses);
             showButton.setOnClickListener(v -> {
                 requireActivity().getSupportFragmentManager().beginTransaction()
