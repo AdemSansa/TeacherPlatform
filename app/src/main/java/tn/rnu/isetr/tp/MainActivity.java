@@ -1,5 +1,6 @@
 package tn.rnu.isetr.tp;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -165,28 +167,47 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        homeFragment homeFragment = (homeFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        TeachAdapter adapter = homeFragment.getAdapter();
+        int itemId = item.getItemId();
 
-        if (item.getItemId() == R.id.a_z) {
-            adapter.sortByName(teacherList);
+        if (itemId == R.id.a_z) {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (currentFragment instanceof homeFragment) {
+                homeFragment homeFrag = (homeFragment) currentFragment;
+                TeachAdapter adapter = homeFrag.getAdapter();
+                adapter.sortByName(teacherList); // Sort A-Z
+            } else {
+                Log.e("FragmentError", "Current fragment is not homeFragment for sorting.");
+            }
             return true;
-        } else if (item.getItemId() == R.id.z_a) {
-           adapter.reverseByName(teacherList);
+        } else if (itemId == R.id.z_a) {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (currentFragment instanceof homeFragment) {
+                homeFragment homeFrag = (homeFragment) currentFragment;
+                TeachAdapter adapter = homeFrag.getAdapter();
+                adapter.reverseByName(teacherList); // Sort Z-A
+            } else {
+                Log.e("FragmentError", "Current fragment is not homeFragment for sorting.");
+            }
             return true;
-        } else if (item.getItemId() == R.id.add) {
-            showAddingDialog();
-        }else if (item.getItemId() == R.id.AjoutMenu) {
-            //Show cour fragment
-            getSupportFragmentManager().beginTransaction().replace
-                    (R.id.fragment_container, new courFragment()).commit();
+        } else if (itemId == R.id.add) {
+            showAddingDialog(); // Show the add dialog
+            return true;
+        } else if (itemId == R.id.AjoutMenu) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new courFragment())
+                    .commit(); // Replace with courFragment
+            return true;
+        } else if (itemId == R.id.ListerMenu) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new ListCourFragment())
+                    .commit(); // Replace with ListCourFragment
+            return true;
         }
-        else if (item.getItemId() == R.id.ListerMenu) {
-            //SHow listcourfragment
-            getSupportFragmentManager().beginTransaction().replace
-                    (R.id.fragment_container, new ListCourFragment()).commit();
-        }
+
         return super.onOptionsItemSelected(item);
+
     }
     @Override
     public void onTeacherAdded(String name, String email) {
