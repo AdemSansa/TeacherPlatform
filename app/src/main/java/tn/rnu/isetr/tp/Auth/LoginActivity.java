@@ -45,6 +45,8 @@ public class LoginActivity  extends AppCompatActivity {
                 if (isAuthenticated) {
                     Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
                     sharedPreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
                     Cursor cursor = databaseManager.getUserByEmail(email);
                     if (cursor.moveToFirst()) {
                         String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
@@ -56,9 +58,12 @@ public class LoginActivity  extends AppCompatActivity {
                         bind.ErrorTextView.setText("Invalid Email or Password");
                         Toast.makeText(this, "Invalid Email or Password", Toast.LENGTH_SHORT).show();
                     }
+
+                }else {
+                    bind.ErrorTextView.setText("Invalid Email or Password");
+                    Toast.makeText(this, "Invalid Email or Password", Toast.LENGTH_SHORT).show();
                 }
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+
 
             }
 

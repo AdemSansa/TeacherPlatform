@@ -49,7 +49,7 @@ public class UsersContactsFragment extends Fragment {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
                 String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
                 String email = cursor.getString(cursor.getColumnIndexOrThrow("email"));
-                String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone§"));
+                String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone"));
                 userList.add(new User(name, email, phone));
             } while (cursor.moveToNext());
             cursor.close();
